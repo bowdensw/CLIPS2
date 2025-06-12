@@ -78,16 +78,17 @@ setObj randRange 0.1
 resetPlot
 
 # Row 1 (bottom): Outputs
-plotRow 4 b 2 n left_obj_OUT 4 b 4 n left_name_OUT 3 b 20 n right_obj_OUT 4 b 22 n right_name_OUT 3
+plotRow 4 b 0 n left_obj_OUT 4 b 5 n left_name_OUT 3 b 20 n right_obj_OUT 4 b 5 n right_name_OUT 3
 
 # Row 2: Hidden layers
-plotRow 4 b 6 n left_hidden 20 b 20 n right_hidden 20
+plotRow 4 b 0 n left_hidden 20 b 12 n right_hidden 20
 
 # Row 3: Context layers
-plotRow 4 b 8 n left_context 20 b 20 n right_context 20
+plotRow 4 b 0 n left_context 20 b 12 n right_context 20
 
-# Row 4 (top): Inputs
-plotRow 4 b 10 n left_obj 4 b 4 n left_name 3 b 20 n right_obj 4 b 22 n right_name 3
+# Row 4: Inputs
+plotRow 4 b 0 n left_obj 4 b 5 n left_name 3 b 20 n right_obj 4 b 5 n right_name 3
+
 
 drawUnits
 viewUnits
