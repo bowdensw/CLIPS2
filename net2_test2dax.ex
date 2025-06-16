@@ -1,4 +1,5 @@
 name: test2dax_consistent
+proc: {setObj left_obj.clampStrength 1 ; setObj right_obj.clampStrength 1; setObj left_obj_OUT.errorScale 1; setObj right_obj_OUT.errorScale 1}
 I:
 (left_obj)
 1 1 0.75 0.75
@@ -19,6 +20,7 @@ T:
 1 0 0 
 ;
 name: test2dax_inconsistent
+proc: {setObj left_obj.clampStrength 1 ; setObj right_obj.clampStrength 1; setObj left_obj_OUT.errorScale 1; setObj right_obj_OUT.errorScale 1}
 I:
 (left_obj)
 1 1 0.75 0.75
