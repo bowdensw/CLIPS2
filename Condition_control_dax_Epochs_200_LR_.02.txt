@@ -1,0 +1,6 @@
+0 test1dax_consistent 17.81628
+1 test1dax_inconsistent 13.07386
+0 test1dax_consistent 17.6688
+1 test1dax_inconsistent 13.08003
+0 test1dax_consistent 16.90901
+1 test1dax_inconsistent 12.56026
