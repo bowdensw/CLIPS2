@@ -111,7 +111,7 @@ proc mainSim {} {
 		
 		# define loop
 			foreach cond $condition trEvent $trainEvent teEvent $testEvent { 
-				set workingdirectory "C:/Users/spncr/Downloads/CLIPS2"
+				set workingdirectory "C:/Users/spncr/Downloads/CLIPS2/network_2"
 					cd $workingdirectory
 				foreach epochs $trainEpochs {
 					testNetwork 100 $trEvent $epochs $teEvent Condition_${cond}_Epochs_${epochs}_LR_${learningRates}.txt
