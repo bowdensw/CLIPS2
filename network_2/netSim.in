@@ -67,21 +67,30 @@ proc mainSim {} {
 		
 		
 		proc saveActivations {fname group} { 
-    		set outfile [open $fname a] 
-    		puts $outfile "[getObj currentExample.num] [getObj currentExample.name] " nonewline 
-    		printUnitValues -$outfile printActivation $group 
-    		puts $outfile "\n" nonewline 
-    		close $outfile 
-		}
+    	set outfile [open $fname a] 
+    	set exNum [getObj currentExample.num]
+    	set exName [getObj currentExample.name]
+    	set groupName [getObj $group.name]
+    	puts $outfile "$exNum $exName $groupName"
+    	printUnitValues -$outfile printActivation $group 
+    	puts $outfile ""  ;# adds a newline after the vector
+    	close $outfile 
+		}	
 
-		proc testAllFinalActs {fname group} { 
-    		resetExampleSet [getObj testingSet.name] 
-    		set nex [getObj testingSet.numExamples] 
-    		for {set i 0} {$i < $nex} {incr i} {
-				doExample -set [getObj testingSet.name]
-				saveActivations $fname $group
-    		}
-		}
+		proc testAllFinalActs {fname groupList} {
+    	resetExampleSet [getObj testingSet.name] 
+    	set nex [getObj testingSet.numExamples] 
+    	for {set i 0} {$i < $nex} {incr i} {
+        	doExample -set [getObj testingSet.name]
+        	foreach g $groupList {
+            	saveActivations $fname $g
+        	}
+        	# Optional: add separator between examples
+        	set outfile [open $fname a]
+        	puts $outfile "---"
+        	close $outfile
+    	}
+}
 
 		proc testNetwork {n train trainNum test fname group} {
 			for {set i 0} {$i < $n} {incr i} {
