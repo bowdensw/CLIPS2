@@ -60,25 +60,30 @@ proc mainSim {} {
 		setObj momentum	    0.9 
 		setObj batchSize    1
 		setObj randRange 0.1
+
+		proc printActivation {group unit} { 
+			format "%.3f " [getObj $unit.output] 
+		} 
 		
 		
-		proc saveActivations {fname} { 
-			set outfile [open $fname a] 
-			puts $outfile "[getObj currentExample.num] [getObj currentExample.name] " nonewline 
-			puts $outfile [getObj exampleError]
-			close $outfile 
+		proc saveActivations {fname group} { 
+    		set outfile [open $fname a] 
+    		puts $outfile "[getObj currentExample.num] [getObj currentExample.name] " nonewline 
+    		printUnitValues -$outfile printActivation $group 
+    		puts $outfile "\n" nonewline 
+    		close $outfile 
 		}
 
-		proc testAllFinalActs {fname} { 
-			resetExampleSet [getObj testingSet.name] 
-			set nex [getObj testingSet.numExamples] 
-			for {set i 0} {$i < $nex} {incr i} {
+		proc testAllFinalActs {fname group} { 
+    		resetExampleSet [getObj testingSet.name] 
+    		set nex [getObj testingSet.numExamples] 
+    		for {set i 0} {$i < $nex} {incr i} {
 				doExample -set [getObj testingSet.name]
-				saveActivations $fname
-			}
+				saveActivations $fname $group
+    		}
 		}
 
-		proc testNetwork {n train trainNum test fname} {
+		proc testNetwork {n train trainNum test fname group} {
 			for {set i 0} {$i < $n} {incr i} {
 				# initializes new set of random weights
 				resetNet
@@ -98,7 +103,7 @@ proc mainSim {} {
 				useTrainingSet $train
 				train $trainNum
 				useTestingSet $test
-				testAllFinalActs $fname
+				testAllFinalActs $fname $group
 			}
 		}
 		
@@ -108,13 +113,14 @@ proc mainSim {} {
 		set trainEvent [list net2_train1_ctrl net2_train1_dax net2_train1_fip net2_train2_ctrl net2_train2_dax net2_train2_fip]
 		set testEvent [list net2_test1dax net2_test1dax net2_test1fip net2_test2fip net2_test2dax net2_test2fip]
 		set trainEpochs [list 200 300 400 500]
+		set groupList [list left_hidden right_hidden]
 		
 		# define loop
 			foreach cond $condition trEvent $trainEvent teEvent $testEvent { 
 				set workingdirectory "C:/Users/spncr/Downloads/CLIPS2/network_2"
 					cd $workingdirectory
 				foreach epochs $trainEpochs {
-					testNetwork 100 $trEvent $epochs $teEvent Condition_${cond}_Epochs_${epochs}_LR_${learningRates}.txt
+					testNetwork 100 $trEvent $epochs $teEvent Condition_${cond}_Epochs_${epochs}_LR_${learningRates}.txt $groupList
 				}
 			}
 	}
@@ -129,7 +135,6 @@ proc mainSim {} {
 }
 
 mainSim
-
 
 
 # the function below defines a network that the user can play with.
