@@ -1,67 +1,32 @@
+# Load required package
+install.packages("pheatmap")  # Run only once
+library(pheatmap)
 
-# loop over folders 
-parent_dir = "C:/Users/bentod2/Documents/projects/current/CLIPS2/network_2/errorResults"
+# Load the data
+df = read.table(file.choose(), 
+                header = FALSE, stringsAsFactors = FALSE)
 
-folders = list.dirs(parent_dir, recursive = FALSE)
+# Assign column names
+colnames(df) = c("trial", "event", "layer", paste0("unit_", 1:20))
 
+# Create a unique label for each row
+df$base_label = paste(df$event, df$layer, df$trial, sep = "_")
+df$label = make.unique(df$base_label)
 
-# Initialize empty dataframe to store results
-results_df = data.frame(
-  folder = character(),
-  best_file = character(),
-  min_dif = numeric(),
-  mean_consistent = numeric(),
-  mean_inconsistent = numeric(),
-  stringsAsFactors = FALSE
-)
-# loop over each folder
-for(folder in folders){
-  
-  # get all of the files in the current folder
-  files = list.files(path = folder, pattern = ".txt", full.names = TRUE)
-  
-  min_dif = Inf
-  best_file = ""
-  mean_consistent = NULL
-  mean_inconsistent = NULL
-  
-  # now loop over each file in the folder 
-  for (file in files) {
-    options(scipen=999)
-    file_name = basename(file)
-    
-    data = read.table(file, header = FALSE, stringsAsFactors = FALSE)
-    
-    data$ID = rep(1:100, each = 2)
-    data$eventType = rep(c("Consistent", "Inconsistent"), each = 1, times = 100)
-    data$eventType = as.factor(data$eventType)
-    
-    data$looking_time = data$V3
-    
-    data = data[,-c(1:3)]
-    
-    
-    
-    # Calculate largest p-value
-    dif = mean(data$looking_time[data$eventType=="Consistent"])-
-      mean(data$looking_time[data$eventType=="Inconsistent"])
-    
-    # Check if this is the best model so far
-    if (dif < 0) {
-      min_dif = dif
-      best_file = file
-      mean_consistent = mean(data$looking_time[data$eventType=="Consistent"])
-      mean_inconsistent = mean(data$looking_time[data$eventType=="Inconsistent"])
-    }
-  }
-  
-  # Append results to dataframe
-  results_df = rbind(results_df, data.frame(
-    folder = folder,
-    best_file = best_file,
-    min_dif = min_dif,
-    mean_consistent = mean_consistent,
-    mean_inconsistent = mean_inconsistent,
-    stringsAsFactors = FALSE
-  ))
-}
+# Subset the first four rows
+df_small = df[1:4, ]
+
+# Extract only the numeric activations
+X = as.matrix(df[, paste0("unit_", 1:20)])
+rownames(X) = df$label
+
+# Compute 1 - correlation dissimilarity matrix
+cor_matrix = cor(t(X))
+dissimilarity_matrix = 1 - cor_matrix
+
+# Plot the RSA matrix as a heatmap
+pheatmap(dissimilarity_matrix,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         color = colorRampPalette(c("blue", "white", "red"))(100),
+         main = "Representational Dissimilarity Matrix (1 - Correlation)")
