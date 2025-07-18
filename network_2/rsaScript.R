@@ -17,8 +17,8 @@ df$label = make.unique(df$base_label)
 df_small = df[1:4, ]
 
 # Extract only the numeric activations
-X = as.matrix(df[, paste0("unit_", 1:20)])
-rownames(X) = df$label
+X = as.matrix(df_small[, paste0("unit_", 1:20)])
+rownames(X) = df_small$label
 
 # Compute 1 - correlation dissimilarity matrix
 cor_matrix = cor(t(X))
