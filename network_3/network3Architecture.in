@@ -1,0 +1,117 @@
+
+
+## EXPERIMENTS 1, 2, & 3 SIMULATIONS ##
+# proc simsE123 {} 
+# name of network
+addNet clipsSRN -i 24
+
+# first: tail; second unit: ears
+# input groups
+# (Feature 1 = 0, Feature 2 = 0.25, Feature 3 = 0.5, Feature 4 = 0.75, Feature 5 = 1)
+addGroup left_obj 4 INPUT WEAK_CLAMP 
+# (dax = 1 0 0, fip = 0 1 0, ctrl = 0 0 1)
+addGroup right_obj 4 INPUT WEAK_CLAMP
+
+
+
+# hidden group (# there are necessarily fewer hidden units than there are input and output units)
+# context group
+addGroup left_context 20 ELMAN
+addGroup left_hidden 20 RELU
+
+addGroup right_context 20 ELMAN
+addGroup right_hidden 20 RELU
+
+# output group
+addGroup left_name_OUT 3 OUTPUT
+addGroup right_name_OUT 3 OUTPUT
+
+
+
+
+# connect groups (input -> hidden -> output)
+connectGroups {left_obj left_context} left_hidden {left_name_OUT}
+elmanConnect left_hidden left_context
+
+connectGroups {right_obj right_context} right_hidden { right_name_OUT}
+elmanConnect right_hidden right_context
+
+#initializes new set of random weights
+resetNet
+
+#freeze weights in left part of net
+freezeWeights -group {left_hidden left_name_OUT}
+
+#save the unfrozen weights 
+saveWeights rightnet.wt -noFrozen
+
+#load saved weights to left net
+loadWeights rightnet.wt -onlyFrozen
+
+#thaw Weights 
+thawWeights
+
+
+
+# set default clamp strength
+setObj left_obj.clampStrength 1
+setObj right_obj.clampStrength 1
+
+
+
+		
+# set learning and display parameters
+setObj learningRate 0.0675 
+setObj momentum	    0.9 
+setObj batchSize    1
+setObj numUpdates   500
+setObj reportInterval 1
+setObj unitCellSize 20
+setObj linkCellSize 10
+setObj randRange 0.1
+
+
+resetPlot
+
+resetPlot
+
+resetPlot
+
+resetPlot
+
+# Row 1 (bottom): Outputs
+plotRow 4 \
+  n left_name_OUT 3 \
+  b 27 \
+  n right_name_OUT 3 \
+  b 0
+
+# Row 2: Hidden layers
+plotRow 4 \
+  n left_hidden 20 \
+  b 10 \
+  n right_hidden 20 \
+  b 0
+
+# Row 3: Context layers
+plotRow 4 \
+  n left_context 20 \
+  b 10 \
+  n right_context 20 \
+  b 0
+
+# Row 4 (top): Inputs
+plotRow 4 \
+  n left_obj 4 \
+  b 26 \
+  n right_obj 4 \
+  b 0
+
+drawUnits
+viewUnits
+
+
+
+
+
+
