@@ -4,16 +4,16 @@
 proc mainSimHidden {} {
 	proc netSim {netName learningRates folders} {
 	# name of network
-	addNet $netName -i 24
-	
-	# first: tail; second unit: ears
+		addNet $netName -i 24
+
+		# first: tail; second unit: ears
 		# input groups
 		# (Feature 1 = 0, Feature 2 = 0.25, Feature 3 = 0.5, Feature 4 = 0.75, Feature 5 = 1)
 		addGroup left_obj 4 INPUT WEAK_CLAMP 
 		# (dax = 1 0 0, fip = 0 1 0, ctrl = 0 0 1)
-		addGroup left_name 3 INPUT  
 		addGroup right_obj 4 INPUT WEAK_CLAMP
-		addGroup right_name 3 INPUT
+
+
 
 		# hidden group (# there are necessarily fewer hidden units than there are input and output units)
 		# context group
@@ -24,35 +24,36 @@ proc mainSimHidden {} {
 		addGroup right_hidden 20 RELU
 
 		# output group
-		addGroup left_obj_OUT 4 OUTPUT
 		addGroup left_name_OUT 3 OUTPUT
-		addGroup right_obj_OUT 4 OUTPUT 
 		addGroup right_name_OUT 3 OUTPUT
 
+
+
+
 		# connect groups (input -> hidden -> output)
-		connectGroups {left_obj left_name left_context} left_hidden {left_obj_OUT left_name_OUT}
+		connectGroups {left_obj left_context} left_hidden {left_name_OUT}
 		elmanConnect left_hidden left_context
 
-		connectGroups {right_obj right_name right_context} right_hidden {right_obj_OUT right_name_OUT}
+		connectGroups {right_obj right_context} right_hidden { right_name_OUT}
 		elmanConnect right_hidden right_context
-		
+
 		# delete the bias group
 		deleteGroups bias
 		
 		
 		# load examples
-		loadExamples net2_train1_dax.ex
-		loadExamples net2_train1_fip.ex
-		loadExamples net2_train1_ctrl.ex
+		loadExamples net3_train1_dax.ex
+		loadExamples net3_train1_fip.ex
+		loadExamples net3_train1_ctrl.ex
 		
-		loadExamples net2_train2_dax.ex
-		loadExamples net2_train2_fip.ex
-		loadExamples net2_train2_ctrl.ex
+		loadExamples net3_train2_dax.ex
+		loadExamples net3_train2_fip.ex
+		loadExamples net3_train2_ctrl.ex
 		
-		loadExamples net2_test1dax.ex
-		loadExamples net2_test1fip.ex
-		loadExamples net2_test2dax.ex
-		loadExamples net2_test2fip.ex
+		loadExamples net3_test1dax.ex
+		loadExamples net3_test1fip.ex
+		loadExamples net3_test2dax.ex
+		loadExamples net3_test2fip.ex
 		
 		
 		# set learning and display parameters
@@ -94,7 +95,7 @@ proc mainSimHidden {} {
 				resetNet
 				
 				# freeze weights in left part of net
-				freezeWeights -group {left_hidden left_obj_OUT left_name_OUT}
+				freezeWeights -group {left_hidden left_name_OUT}
 				
 				# save the unfrozen weights 
 				saveWeights rightnet.wt -noFrozen
@@ -115,14 +116,14 @@ proc mainSimHidden {} {
 		
 		# define lists for looping
 		set condition [list control_dax experiment_dax experiment_fip control_fip experiment_dax experiment_fip]
-		set trainEvent [list net2_train1_ctrl net2_train1_dax net2_train1_fip net2_train2_ctrl net2_train2_dax net2_train2_fip]
-		set testEvent [list net2_test1dax net2_test1dax net2_test1fip net2_test2fip net2_test2dax net2_test2fip]
+		set trainEvent [list net3_train1_ctrl net3_train1_dax net3_train1_fip net3_train2_ctrl net3_train2_dax net3_train2_fip]
+		set testEvent [list net3_test1dax net3_test1dax net3_test1fip net3_test2fip net3_test2dax net3_test2fip]
 		set trainEpochs [list 200 300 400 500]
 		set groupList [list left_hidden right_hidden]
 		
 		# define loop
 			foreach cond $condition trEvent $trainEvent teEvent $testEvent { 
-				set workingdirectory "C:/Users/bentod2/Documents/projects/current/CLIPS2/network_2/$folders"
+				set workingdirectory "C:/Users/spncr/Downloads/CLIPS2/network_3/$folders"
 					cd $workingdirectory
 				foreach epochs $trainEpochs {
 					testNetwork 100 $trEvent $epochs $teEvent Condition_${cond}_Epochs_${epochs}_LR_${learningRates}_trainEvent_${trEvent}_testEvent_${teEvent}.txt $groupList
@@ -140,23 +141,23 @@ proc mainSimHidden {} {
 	}
 }
 
-#mainSimHidden
+mainSimHidden
 
 
 # this function below defines a simulation that prints error
 proc mainSimError {} {
 	proc netSim {netName learningRates folders} {
 	# name of network
-	addNet $netName -i 24
-	
-	# first: tail; second unit: ears
+		addNet $netName -i 24
+
+		# first: tail; second unit: ears
 		# input groups
 		# (Feature 1 = 0, Feature 2 = 0.25, Feature 3 = 0.5, Feature 4 = 0.75, Feature 5 = 1)
 		addGroup left_obj 4 INPUT WEAK_CLAMP 
 		# (dax = 1 0 0, fip = 0 1 0, ctrl = 0 0 1)
-		addGroup left_name 3 INPUT  
 		addGroup right_obj 4 INPUT WEAK_CLAMP
-		addGroup right_name 3 INPUT
+
+
 
 		# hidden group (# there are necessarily fewer hidden units than there are input and output units)
 		# context group
@@ -167,35 +168,38 @@ proc mainSimError {} {
 		addGroup right_hidden 20 RELU
 
 		# output group
-		addGroup left_obj_OUT 4 OUTPUT
 		addGroup left_name_OUT 3 OUTPUT
-		addGroup right_obj_OUT 4 OUTPUT 
 		addGroup right_name_OUT 3 OUTPUT
 
+
+
+
 		# connect groups (input -> hidden -> output)
-		connectGroups {left_obj left_name left_context} left_hidden {left_obj_OUT left_name_OUT}
+		connectGroups {left_obj left_context} left_hidden {left_name_OUT}
 		elmanConnect left_hidden left_context
 
-		connectGroups {right_obj right_name right_context} right_hidden {right_obj_OUT right_name_OUT}
+		connectGroups {right_obj right_context} right_hidden { right_name_OUT}
 		elmanConnect right_hidden right_context
-		
+
+
+
 		# delete the bias group
 		deleteGroups bias
 		
 		
 		# load examples
-		loadExamples net2_train1_dax.ex
-		loadExamples net2_train1_fip.ex
-		loadExamples net2_train1_ctrl.ex
+		loadExamples net3_train1_dax.ex
+		loadExamples net3_train1_fip.ex
+		loadExamples net3_train1_ctrl.ex
 		
-		loadExamples net2_train2_dax.ex
-		loadExamples net2_train2_fip.ex
-		loadExamples net2_train2_ctrl.ex
+		loadExamples net3_train2_dax.ex
+		loadExamples net3_train2_fip.ex
+		loadExamples net3_train2_ctrl.ex
 		
-		loadExamples net2_test1dax.ex
-		loadExamples net2_test1fip.ex
-		loadExamples net2_test2dax.ex
-		loadExamples net2_test2fip.ex
+		loadExamples net3_test1dax.ex
+		loadExamples net3_test1fip.ex
+		loadExamples net3_test2dax.ex
+		loadExamples net3_test2fip.ex
 		
 		
 		# set learning and display parameters
@@ -228,7 +232,7 @@ proc mainSimError {} {
 				resetNet
 				
 				# freeze weights in left part of net
-				freezeWeights -group {left_hidden left_obj_OUT left_name_OUT}
+				freezeWeights -group {left_hidden left_name_OUT}
 				
 				# save the unfrozen weights 
 				saveWeights rightnet.wt -noFrozen
@@ -249,14 +253,14 @@ proc mainSimError {} {
 		
 		# define lists for looping
 		set condition [list control_dax experiment_dax experiment_fip control_fip experiment_dax experiment_fip]
-		set trainEvent [list net2_train1_ctrl net2_train1_dax net2_train1_fip net2_train2_ctrl net2_train2_dax net2_train2_fip]
-		set testEvent [list net2_test1dax net2_test1dax net2_test1fip net2_test2fip net2_test2dax net2_test2fip]
+		set trainEvent [list net3_train1_ctrl net3_train1_dax net3_train1_fip net3_train2_ctrl net3_train2_dax net3_train2_fip]
+		set testEvent [list net3_test1dax net3_test1dax net3_test1fip net3_test2fip net3_test2dax net3_test2fip]
 		set trainEpochs [list 200 300 400 500]
 		set groupList [list left_hidden right_hidden]
 		
 		# define loop
 			foreach cond $condition trEvent $trainEvent teEvent $testEvent { 
-				set workingdirectory "C:/Users/bentod2/Documents/projects/current/CLIPS2/network_2/errorResults/$folders"
+				set workingdirectory "C:/Users/spncr/Downloads/CLIPS2/network_3/errorResults/$folders"
 					cd $workingdirectory
 				foreach epochs $trainEpochs {
 					testNetwork 100 $trEvent $epochs $teEvent Condition_${cond}_Epochs_${epochs}_LR_${learningRates}_trainEvent_${trEvent}_testEvent_${teEvent}.txt 
@@ -274,11 +278,10 @@ proc mainSimError {} {
 	}
 }
 
-mainSimError
 
 # the function below defines a network that the user can play with.
 
-proc vanSim {} {
+proc vanSim {} { 
 # name of network
 addNet clipsSRN -i 24
 
@@ -287,9 +290,7 @@ addNet clipsSRN -i 24
 # (Feature 1 = 0, Feature 2 = 0.25, Feature 3 = 0.5, Feature 4 = 0.75, Feature 5 = 1)
 addGroup left_obj 4 INPUT WEAK_CLAMP 
 # (dax = 1 0 0, fip = 0 1 0, ctrl = 0 0 1)
-addGroup left_name 3 INPUT  
 addGroup right_obj 4 INPUT WEAK_CLAMP
-addGroup right_name 3 INPUT
 
 
 
@@ -302,26 +303,24 @@ addGroup right_context 20 ELMAN
 addGroup right_hidden 20 RELU
 
 # output group
-addGroup left_obj_OUT 4 OUTPUT
 addGroup left_name_OUT 3 OUTPUT
-addGroup right_obj_OUT 4 OUTPUT 
 addGroup right_name_OUT 3 OUTPUT
 
 
 
 
 # connect groups (input -> hidden -> output)
-connectGroups {left_obj left_name left_context} left_hidden {left_obj_OUT left_name_OUT}
+connectGroups {left_obj left_context} left_hidden {left_name_OUT}
 elmanConnect left_hidden left_context
 
-connectGroups {right_obj right_name right_context} right_hidden {right_obj_OUT right_name_OUT}
+connectGroups {right_obj right_context} right_hidden { right_name_OUT}
 elmanConnect right_hidden right_context
 
 #initializes new set of random weights
 resetNet
 
 #freeze weights in left part of net
-freezeWeights -group {left_hidden left_obj_OUT left_name_OUT}
+freezeWeights -group {left_hidden left_name_OUT}
 
 #save the unfrozen weights 
 saveWeights rightnet.wt -noFrozen
@@ -339,6 +338,7 @@ setObj left_obj.clampStrength 1
 setObj right_obj.clampStrength 1
 
 
+
 		
 # set learning and display parameters
 setObj learningRate 0.0675 
@@ -353,19 +353,45 @@ setObj randRange 0.1
 
 resetPlot
 
+resetPlot
+
+resetPlot
+
+resetPlot
+
 # Row 1 (bottom): Outputs
-plotRow 4 b 0 n left_obj_OUT 4 b 5 n left_name_OUT 3 b 20 n right_obj_OUT 4 b 5 n right_name_OUT 3
+plotRow 4 \
+  n left_name_OUT 3 \
+  b 27 \
+  n right_name_OUT 3 \
+  b 0
 
 # Row 2: Hidden layers
-plotRow 4 b 0 n left_hidden 20 b 12 n right_hidden 20
+plotRow 4 \
+  n left_hidden 20 \
+  b 10 \
+  n right_hidden 20 \
+  b 0
 
 # Row 3: Context layers
-plotRow 4 b 0 n left_context 20 b 12 n right_context 20
+plotRow 4 \
+  n left_context 20 \
+  b 10 \
+  n right_context 20 \
+  b 0
 
-# Row 4: Inputs
-plotRow 4 b 0 n left_obj 4 b 5 n left_name 3 b 20 n right_obj 4 b 5 n right_name 3
-
+# Row 4 (top): Inputs
+plotRow 4 \
+  n left_obj 4 \
+  b 26 \
+  n right_obj 4 \
+  b 0
 
 drawUnits
 viewUnits
 }
+
+
+
+
+
