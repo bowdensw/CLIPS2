@@ -60,7 +60,7 @@ proc mainSimHidden {} {
 		setObj learningRate $learningRates
 		setObj momentum	    0.9 
 		setObj batchSize    1
-		setObj randRange 0.1
+		setObj randRange 0.01
 
 		proc printActivation {group unit} { 
 			format "%.3f " [getObj $unit.output] 
@@ -206,7 +206,7 @@ proc mainSimError {} {
 		setObj learningRate $learningRates
 		setObj momentum	    0.9 
 		setObj batchSize    1
-		setObj randRange 0.1
+		setObj randRange 0.01
 
 		
 		# create a function that gets the error for each test example
@@ -277,6 +277,7 @@ proc mainSimError {} {
 		netSim $netName $lr $fldrs
 	}
 }
+
 
 
 # the function below defines a network that the user can play with.

@@ -1,3 +1,5 @@
+defI:-
+defT:-
 name: test2dax_consistent
 I:
 (left_obj)
