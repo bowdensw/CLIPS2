@@ -3,9 +3,9 @@ defT:-
 name: test1fip_consistent
 I:
 (left_obj)
-0 0 0.25 0.25
+0.2 0.2 0.4 0.4
 (right_obj)
-0.75 1 0.75 1
+0.8 1 0.8 1
 T:
 (left_name_OUT)
 0 1 0
@@ -15,9 +15,9 @@ T:
 name: test1fip_inconsistent
 I:
 (left_obj)
-0 0 0.25 0.25
+0.2 0.2 0.4 0.4
 (right_obj)
-0.25 0 0.25 0
+0.4 0.2 0.4 0.2
 T:
 (left_name_OUT)
 0 1 0 
